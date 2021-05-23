@@ -1,8 +1,5 @@
 import asyncio
 
-from sqlalchemy.future import select
-from sqlalchemy.orm import selectinload
-
 from database import async_db_session
 from models import Post, User
 
@@ -15,7 +12,7 @@ async def init_app():
 
 async def async_main():
     await init_app()
-    User.create(full_name="John Doe")
+    await User.create(full_name="John Doe")
     user = await User.get(1)
     print(user.id)
     print(user.full_name)

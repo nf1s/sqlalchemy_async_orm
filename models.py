@@ -1,6 +1,6 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.future import select
-from sqlalchemy.orm import relationship, selectinload
+from sqlalchemy.orm import relationship
 
 from database import Base, async_db_session
 
@@ -9,7 +9,7 @@ class ModelAdmin:
     @classmethod
     async def create(cls, **kwargs):
         async with async_db_session.begin():
-            await async_db_session.flush()
+            async_db_session.add(cls(**kwargs))
 
     async def update(self, **kwargs):
         for k, v in kwargs.items():
