@@ -15,8 +15,8 @@ class ModelAdmin:
     @classmethod
     async def update(cls, id, **kwargs):
         query = (
-            sqlalchemy_update(User)
-            .where(User.id == id)
+            sqlalchemy_update(cls)
+            .where(cls.id == id)
             .values(**kwargs)
             .execution_options(synchronize_session="fetch")
         )
