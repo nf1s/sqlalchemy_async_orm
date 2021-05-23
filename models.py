@@ -1,4 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import update as sqlalchemy_update
 from sqlalchemy.future import select
 from sqlalchemy.orm import relationship
 
@@ -8,12 +9,19 @@ from database import Base, async_db_session
 class ModelAdmin:
     @classmethod
     async def create(cls, **kwargs):
-        async with async_db_session.begin():
-            async_db_session.add(cls(**kwargs))
+        async_db_session.add(cls(**kwargs))
+        await async_db_session.commit()
 
-    async def update(self, **kwargs):
-        for k, v in kwargs.items():
-            setattr(self, k, v)
+    @classmethod
+    async def update(cls, id, **kwargs):
+        query = (
+            sqlalchemy_update(User)
+            .where(User.id == id)
+            .values(**kwargs)
+            .execution_options(synchronize_session="fetch")
+        )
+
+        await async_db_session.execute(query)
         await async_db_session.commit()
 
     @classmethod
